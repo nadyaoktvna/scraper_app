@@ -1,0 +1,57 @@
+.card:hover {
+  transform: translateY(-5px);
+  transition: transform 0.2s ease-in-out;
+}
+
+.card.out-of-stock {
+  opacity: 0.6;          /* Membuat kartu redup */
+  filter: grayscale(1);  /* Membuat warna kartu menjadi abu-abu */
+  pointer-events: none;  /* Mencegah klik di seluruh area kartu */
+}
+
+/* Memastikan tombol di dalam kartu tetap bisa diklik jika ada tombol lain, 
+   tapi karena kita sudah disabled, ini aman. */
+.card.out-of-stock .card-footer {
+  pointer-events: auto;  
+}
+
+/* Style pagination: */
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  gap: 5px;
+
+  /* Menargetkan link dan span (nomor halaman) */
+  & > span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid #dee2e6;
+    color: #0d6efd;
+    text-decoration: none;
+    border-radius: 4px;
+    background-color: white;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  /* Style untuk halaman aktif */
+  & > span.current {
+    background-color: #0d6efd !important;
+    color: white !important;
+    border-color: #0d6efd !important;
+  }
+
+  /* Style untuk titik-titik (...) */
+  & > span.gap {
+    border: none !important;
+    background: none !important;
+    color: #6c757d;
+  }
+}

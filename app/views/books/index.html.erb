@@ -1,0 +1,24 @@
+<div class="container mt-4">
+  <div class="row mb-4 align-items-center">
+    <div class="col-md-6"><h1>My Book Store</h1></div>
+    <div class="col-md-6 text-md-end">
+      <%= form_with url: books_path, method: :get, class: "d-inline-flex" do |f| %>
+        <%= f.text_field :query, value: params[:query], placeholder: "Search...", class: "form-control" %>
+        <%= f.button class: "btn btn-outline-primary ms-2" do %><i class="bi bi-search"></i><% end %>
+      <% end %>
+    </div>
+  </div>
+  
+  <div id="turbo_wrapper">
+    <%= turbo_stream_from "scraper_status" %>
+  </div>
+  <div class="card p-4 mb-4 border-0 shadow-sm">
+      <%= render "books/scraper_controls", last_result: ScraperTool.last_result %>
+  </div>
+
+  <%= render "books/books_grid", books: @books %>
+  
+  <div class="d-flex justify-content-center mt-5 mb-5">
+    <%= paginate @books, window: 2, pagination_class: "pagination" %>
+  </div>
+</div>

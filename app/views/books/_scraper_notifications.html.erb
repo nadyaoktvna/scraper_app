@@ -1,0 +1,10 @@
+<%# app/views/books/_scraper_notifications.html.erb %>
+<div id="scraper_notifications">
+  <% if local_assigns[:last_result].present? %>
+    <% last_result = local_assigns[:last_result] %>
+    <div class="alert alert-<%= last_result[:status] == :success ? 'success' : (last_result[:status] == :stopped ? 'warning' : 'danger') %> alert-dismissible fade show mb-3" role="alert">
+      <strong><%= last_result[:status].to_s.upcase %>:</strong> <%= last_result[:message] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% end %>
+</div>

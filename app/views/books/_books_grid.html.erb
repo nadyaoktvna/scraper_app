@@ -1,0 +1,62 @@
+<div id="books_grid">
+  <% if books.any? %>
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+      <% books.each do |book| %>
+        <div class="col">
+          <div class="card h-100 shadow-sm border-1 <%= 'opacity-75' if book.availability <= 0 %>">
+            <div style="height: 250px; overflow: hidden;">
+              <%
+                # Dibungkus begin/rescue: kalau generate gambar 1 buku gagal,
+                # buku lain di grid tetap tampil normal.
+                cover_html = begin
+                  if book.cover_image.attached?
+                    image_tag(book.cover_image.variant(:thumb), class: "card-img-top", style: "object-fit: contain; width: 100%; height: 100%;")
+                  else
+                    image_tag(book.image_url, class: "card-img-top", style: "object-fit: contain; width: 100%; height: 100%;")
+                  end
+                rescue => e
+                  Rails.logger.warn "[BooksGrid] Gagal render gambar untuk Book ID #{book.id}: #{e.message}"
+                  content_tag(:div, "Gambar tidak tersedia", class: "d-flex align-items-center justify-content-center h-100 text-muted small")
+                end
+              %>
+              <%= cover_html %>
+            </div>
+            <div class="card-body">
+              <h6 class="card-title text-truncate"><%= book.title %></h6>              
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-success fw-bold fs-5">£<%= book.price %></span>
+                <div class="d-flex align-items-center gap-1 ms-auto">
+                  <%= link_to edit_book_path(book), class: "btn btn-sm btn-outline-secondary border-0" do %>
+                    <i class="bi bi-pencil"></i>
+                  <% end %>
+                  <%= button_to book_path(book), method: :delete, class: "btn btn-sm btn-outline-danger border-0" do %>
+                    <i class="bi bi-trash"></i>
+                  <% end %>
+
+                  <span class="badge <%= book.availability > 0 ? 'bg-info' : 'bg-secondary' %>">
+                    Stock: <%= book.availability %>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer bg-white border-0">
+              <% if book.availability > 0 %>
+                <%= button_to purchase_book_path(book), method: :post, class: "btn btn-outline-primary w-100" do %>
+                  <i class="bi bi-cart-plus"></i> Buy Now
+                <% end %>
+              <% else %>
+                <button class="btn btn-secondary w-100" disabled>Sold Out</button>
+              <% end %>
+              
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-5">
+      <h3 class="text">No books available</h3>
+      <p class="text-secondary">It seems the library is empty. Please trigger the scraper to fetch the latest books.</p>
+    </div>
+  <% end %>
+</div>

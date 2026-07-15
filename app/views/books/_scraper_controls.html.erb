@@ -1,0 +1,14 @@
+<div id="scraper_controls">
+  <%= render "books/scraper_notifications", last_result: local_assigns[:last_result] %>
+  <%= render "books/scraper_action_area" %>
+</div>
+
+<script>
+  // Event Delegation agar logic show/hide URL input tetap berjalan
+  document.addEventListener('change', function(e) {
+    if (e.target && e.target.id === 'mode-select') {
+      const container = document.getElementById('url-input-container');
+      container.style.display = (e.target.value === 'url') ? 'block' : 'none';
+    }
+  });
+</script>
