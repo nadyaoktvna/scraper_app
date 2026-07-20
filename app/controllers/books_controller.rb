@@ -24,6 +24,8 @@ class BooksController < ApplicationController
   end
 
   def destroy
+    return redirect_to books_path unless params[:id].to_i > 0
+
     @book = Book.find(params[:id])
     @book.destroy
     flash[:success] = "Buku berhasil dihapus!"
@@ -67,6 +69,16 @@ class BooksController < ApplicationController
       end
 
     redirect_to request.referrer || books_path, status: :see_other
+  end
+
+  def dismiss_notification
+    ScraperTool.clear_last_result
+    # Karena kita pakai Turbo, kita minta update UI agar notifikasi hilang
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace("scraper_notifications", partial: "books/scraper_notifications", locals: { last_result: nil })
+      end
+    end
   end
 
   private

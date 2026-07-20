@@ -1,0 +1,7 @@
+[1;34mINFO [0m 2026-07-20T01:09:53.180Z pid=11 tid=27n: Booted Rails 8.1.3 application in development environment
+Signal INFO not supported
+[1;34mINFO [0m 2026-07-20T01:09:53.181Z pid=11 tid=27n: Running in ruby 4.0.5 (2026-05-20 revision 64336ffd0e) +PRISM [x86_64-linux]
+[1;34mINFO [0m 2026-07-20T01:09:53.181Z pid=11 tid=27n: See LICENSE and the LGPL-3.0 for licensing details.
+[1;34mINFO [0m 2026-07-20T01:09:53.181Z pid=11 tid=27n: Upgrade to Sidekiq Pro for more features and support: https://sidekiq.org
+[1;34mINFO [0m 2026-07-20T01:09:53.181Z pid=11 tid=27n: Sidekiq 8.1.6 connecting to Redis with options {size: 10, pool_name: "internal", url: "redis://redis:6379/1"}
+[1;34mINFO [0m 2026-07-20T01:09:53.235Z pid=11 tid=27n: Sidekiq 8.1.6 connecting to Redis with options {size: 5, pool_name: "default", url: "redis://redis:6379/1"}

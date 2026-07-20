@@ -25,31 +25,19 @@ module ScraperTool
     def stop_requested?; @state_mutex.synchronize { @stop_requested }; end
     def request_stop; @state_mutex.synchronize { @stop_requested = true }; end
     def last_result; @state_mutex.synchronize { @last_result }; end
+    def clear_last_result; @state_mutex.synchronize { @last_result = nil }; end
     def increment_saved_count; @state_mutex.synchronize { @saved_count += 1 }; end
 
     def start_async(mode, custom_url = nil)
       return false if running?
-      # last_result & saved_count di-reset di sini, SEBELUM thread mulai —
-      # supaya kalau user langsung klik Start lagi, notifikasi hasil
-      # scraping SEBELUMNYA tidak "nyangkut" ke sesi scraping yang baru.
       @state_mutex.synchronize { @running = true; @stop_requested = false; @last_result = nil; @saved_count = 0 }
 
       Thread.new do
-        # PENTING: Rails.application.executor.wrap membungkus SELURUH kode
-        # yang menyentuh kelas aplikasi (Book, view, dsb) di thread manual
-        # ini. Tanpa ini, kalau ada auto-reload terjadi (development mode)
-        # selagi thread masih jalan — terutama saat render partial di
-        # broadcast_replace_to di bawah — bisa gagal dengan error yang
-        # ditelan diam-diam oleh Ruby (thread mati tanpa keliatan di UI).
-        # Ini akar dari gejala "spinner tidak pernah berhenti sampai
-        # halaman di-refresh manual".
+
         Rails.application.executor.wrap do
           begin
             run_scraper(mode, custom_url)
 
-            # Kalau sampai sini TANPA exception, tentukan pesannya
-            # berdasarkan apakah user sengaja minta stop, atau memang
-            # selesai natural.
             result = stop_requested? ? 
               { status: :stopped, message: "Dihentikan. #{@saved_count} buku tersimpan." } : 
               { status: :success, message: "Scraping selesai! #{@saved_count} buku disimpan." }
@@ -61,12 +49,7 @@ module ScraperTool
               @last_result = { status: :error, message: "Scraping gagal: #{e.message}" }
             end
           ensure
-            @state_mutex.synchronize do
-              @running = false
-              # PASTIkan @last_result sudah terisi SEBELUM broadcast
-              @last_result = result
-            end
-            
+            @state_mutex.synchronize { @running = false }
             broadcast_status_update
           end
         end
@@ -82,7 +65,7 @@ module ScraperTool
         "scraper_status",
         target: "scraper_notifications",
         partial: "books/scraper_notifications",
-        locals: { last_result: @last_result }
+        locals: { last_result: last_result }
       )
 
       # Update area tombol/form

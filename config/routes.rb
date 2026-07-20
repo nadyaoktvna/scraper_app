@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       post :scrape
       delete :stop_scrape
       get :scrape_status
+      delete :dismiss_notification
     end
     member do
       post :purchase

@@ -11,4 +11,21 @@
       container.style.display = (e.target.value === 'url') ? 'block' : 'none';
     }
   });
+
+  document.addEventListener('click', function(e) {
+    const closeBtn = e.target.closest('#scraper_notifications .btn-close');
+    if (!closeBtn) return;
+
+    const url = closeBtn.dataset.dismissUrl;
+    if (!url) return;
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
+    fetch(url, {
+      method: 'DELETE',
+      headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : {}
+    }).catch(function(err) {
+      console.warn('Gagal memberi tahu server soal dismiss notifikasi:', err);
+    });
+  });
 </script>
