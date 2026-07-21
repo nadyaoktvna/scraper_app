@@ -16,7 +16,7 @@ class BooksController < ApplicationController
   def update
     @book = Book.find(params[:id])
     if @book.update(book_params)
-      flash[:success] = "Buku berhasil diupdate!"
+      flash[:notice] = "Buku berhasil diupdate!"
       redirect_to books_path
     else
       render :edit, status: :unprocessable_entity
@@ -28,7 +28,7 @@ class BooksController < ApplicationController
 
     @book = Book.find(params[:id])
     @book.destroy
-    flash[:success] = "Buku berhasil dihapus!"
+    flash[:notice] = "Buku berhasil dihapus!"
     redirect_to books_path, status: :see_other
   end 
 
@@ -54,7 +54,11 @@ class BooksController < ApplicationController
   end
 
   def purchase
-    @book = Book.find(params[:id])
+    @book = Book.find_by(id: params[:id])
+    unless @book
+      flash[:alert] = "Buku tidak ditemukan!"
+      return redirect_to books_path, status: :see_other
+    end
 
     updated_rows = Book.where(id: @book.id)
                       .where("availability > 0")

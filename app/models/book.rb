@@ -6,7 +6,11 @@ class Book < ApplicationRecord
   end
 
   scope :search, ->(query) { 
-    where("title LIKE ?", "%#{query}%") if query.present? 
+    if query.present?
+      where("title LIKE ?", "%#{query}%") 
+    else
+      all 
+    end
   }
 
   # Method untuk mengunduh dan mengupdate cover_image dari URL

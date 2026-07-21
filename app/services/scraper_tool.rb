@@ -234,7 +234,7 @@ module ScraperTool
 
   def self.save_to_db(data)
     if data[:reference_code].blank?
-      puts "[Database] Skip: reference_code kosong untuk '#{data[:title]}', kemungkinan gagal parsing."
+      Rails.logger.warn "[Database] Skip: reference_code kosong untuk '#{data[:title]}', kemungkinan gagal parsing."
       return
     end
 
