@@ -23,3 +23,5 @@ Things you may want to cover:
 
 * ...
 # scraper_app
+## Git Workflow Exercise
+- Added feature branch for Git simulation exercise.
