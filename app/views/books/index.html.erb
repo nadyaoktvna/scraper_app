@@ -1,24 +1,40 @@
-<div class="container mt-4">
+<div class="container mt-4 mb-5">
+  <!-- Page Header & Search Bar -->
   <div class="row mb-4 align-items-center">
-    <div class="col-md-6"><h1>My Book Store</h1></div>
-    <div class="col-md-6 text-md-end">
-      <%= form_with url: books_path, method: :get, class: "d-inline-flex" do |f| %>
-        <%= f.text_field :query, value: params[:query], placeholder: "Search...", class: "form-control" %>
-        <%= f.button class: "btn btn-outline-primary ms-2" do %><i class="bi bi-search"></i><% end %>
+    <div class="col-md-6">
+      <h1 class="fw-bold text-dark mb-0">My Book Store</h1>
+      <p class="text-muted mb-0">Browse and manage your scraped book collection</p>
+    </div>
+    <div class="col-md-6 mt-3 mt-md-0">
+      <%= form_with url: books_path, method: :get, class: "d-flex gap-2" do |f| %>
+        <div class="input-group">
+          <%= f.text_field :query, value: params[:query], placeholder: "Search books by title...", class: "form-control" %>
+          <% if params[:query].present? %>
+            <%= link_to books_path, class: "btn btn-outline-secondary", title: "Clear Search" do %>
+              <i class="bi bi-x-lg"></i>
+            <% end %>
+          <% end %>
+          <%= f.button class: "btn btn-primary" do %>
+            <i class="bi bi-search me-1"></i> Search
+          <% end %>
+        </div>
       <% end %>
     </div>
   </div>
-  
+
+  <!-- Turbo Stream Receiver -->
   <div id="turbo_wrapper">
     <%= turbo_stream_from "scraper_status" %>
   </div>
-  <div class="card p-4 mb-4 border-0 shadow-sm">
-      <%= render "books/scraper_controls", last_result: ScraperTool.last_result %>
-  </div>
 
+  <!-- Scraper Controls Accordion -->
+  <%= render "books/scraper_controls", last_result: ScraperTool.last_result %>
+
+  <!-- Book Cards Grid -->
   <%= render "books/books_grid", books: @books %>
-  
-  <div class="d-flex justify-content-center mt-5 mb-5">
+
+  <!-- Pagination -->
+  <div class="d-flex justify-content-center mt-5">
     <%= paginate @books, window: 2, pagination_class: "pagination" %>
   </div>
 </div>

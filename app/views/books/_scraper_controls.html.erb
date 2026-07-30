@@ -1,31 +1,28 @@
 <div id="scraper_controls">
+  <!-- Status Notifications -->
   <%= render "books/scraper_notifications", last_result: local_assigns[:last_result] %>
-  <%= render "books/scraper_action_area" %>
+
+  <!-- Accordion Panel for Scraper Controls -->
+  <div class="accordion mb-4 shadow-sm" id="scraperAccordion">
+    <div class="accordion-item border-0">
+      <h2 class="accordion-header" id="headingScraper">
+        <button class="accordion-button <%= 'collapsed' unless ScraperTool.running? %> bg-light fw-semibold text-dark" 
+                type="button" 
+                data-bs-toggle="collapse" 
+                data-bs-target="#collapseScraper" 
+                aria-expanded="<%= ScraperTool.running? ? 'true' : 'false' %>" 
+                aria-controls="collapseScraper">
+          <i class="bi bi-robot me-2 text-primary"></i> Scraping Tool
+        </button>
+      </h2>
+      <div id="collapseScraper" 
+           class="accordion-collapse collapse <%= 'show' if ScraperTool.running? %>" 
+           aria-labelledby="headingScraper" 
+           data-bs-parent="#scraperAccordion">
+        <div class="accordion-body bg-white">
+          <%= render "books/scraper_action_area" %>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
-<script>
-  // Event Delegation agar logic show/hide URL input tetap berjalan
-  document.addEventListener('change', function(e) {
-    if (e.target && e.target.id === 'mode-select') {
-      const container = document.getElementById('url-input-container');
-      container.style.display = (e.target.value === 'url') ? 'block' : 'none';
-    }
-  });
-
-  document.addEventListener('click', function(e) {
-    const closeBtn = e.target.closest('#scraper_notifications .btn-close');
-    if (!closeBtn) return;
-
-    const url = closeBtn.dataset.dismissUrl;
-    if (!url) return;
-
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
-
-    fetch(url, {
-      method: 'DELETE',
-      headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : {}
-    }).catch(function(err) {
-      console.warn('Gagal memberi tahu server soal dismiss notifikasi:', err);
-    });
-  });
-</script>
